@@ -1,0 +1,15 @@
+
+
+Two goals:
+
+1. verify that the assets marked for deletion are safe to remove
+2. tag assets that we decide to keep
+
+
+Assets:
+
+      ENIs -- those marked for removal are not attached. This was validated by Patti, Don, and myself independently for KSTG
+      VPCs -- those marked for removal (at least in KSTG) all appear inactive. Several have subnets, but nothing tagged thusfar have  EC2 instances, vpc endpoints,lambda functions, or RDS instance
+
+
+To that end, I am creating scripts for each of the assets to that I can check things as quickly as possible. So far, it appears that most of what was marked for deletion is legit, except some initial eni findings that were corrected by Don.  I'm focusing on kstg first due to the number of findings and the importance of that environment compared to other lower environments. 
