@@ -2,6 +2,16 @@ import boto3
 import csv
 from urllib.parse import urlparse
 
+
+####### To Do ################
+
+## modify script to output to stdout
+## modify script to have friendlier output
+## modify script to iterate through all regions of an environment (currently uses whatever is in aws configure)
+
+###### To Do ###################
+
+
 def get_resources_by_tag(tag_key, tag_value):
     client = boto3.client('resourcegroupstaggingapi')
     response = client.get_resources(

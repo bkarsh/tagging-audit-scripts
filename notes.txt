@@ -1,15 +1,28 @@
 
 
+
+First off -- lower environments are done -- in that Don has removed all our findings.. .and nothing is broken 
+
+Secondly -- don't re-invent the wheel.
+
+The AWS console itself has perhaps the best tagging tool. If you pull up any console, regardless of environment/region, search for Tag Editor. Here is an example link: https://us-east-1.console.aws.amazon.com/resource-groups/tag-editor/find-resources?region=us-east-1#
+
+You can search all regions in an environment and all resources for a given tag.  For example, select 'all regions' under regions, 'all supported resource types' u nder Resource types, and 'housekeeping-cleanup' under Tags -- and you will see all results. You can modify which columns you want in the output, and download the csv as well. This is a good way to check what is currently tagged (as I find the reports in the dashboards, etc., can be stale). 
+
+
+
 Two goals:
 
-1. verify that the assets marked for deletion are safe to remove
-2. tag assets that we decide to keep
+1. verify that the assets marked for deletion are safe to remove -- yep, looks good. 
+2. tag assets that we decide to keep   -- found none except for some eni findings that Don fixed
 
 
-Assets:
+Some examples:
 
       ENIs -- those marked for removal are not attached. This was validated by Patti, Don, and myself independently for KSTG
       VPCs -- those marked for removal (at least in KSTG) all appear inactive. Several have subnets, but nothing tagged thusfar have  EC2 instances, vpc endpoints,lambda functions, or RDS instance
 
 
-To that end, I am creating scripts for each of the assets to that I can check things as quickly as possible. So far, it appears that most of what was marked for deletion is legit, except some initial eni findings that were corrected by Don.  I'm focusing on kstg first due to the number of findings and the importance of that environment compared to other lower environments. 
+The scripts in this directory were some attempts to analyze stuff tagged by Don, or stuff that wasn't tagged that could get tagging suggestions based on some log. Very much a work in progress.
+
+
