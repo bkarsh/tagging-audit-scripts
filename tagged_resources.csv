@@ -1,3 +1,0 @@
-ResourceARN,Region,Service,Tags
-arn:aws:sqs:us-east-1:700982990415:stable,700982990415,us-east-1,housekeeping-cleanup=Tagged for termination by MS Standardize and Enforce
-arn:aws:ec2:us-east-1:700982990415:elastic-ip/eipalloc-e3b112d2,700982990415,us-east-1,housekeeping-cleanup=Tagged for termination by MS Standardize and Enforce

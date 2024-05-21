@@ -12,31 +12,54 @@ def get_resources_by_tag(tag_key, tag_value):
             }
         ]
     )
-
     resources = response.get('ResourceTagMappingList', [])
     return resources
 
 def parse_arn(arn):
     parsed = urlparse(arn)
     parts = parsed.path.split(':')
-    region = parts[3]
     service = parts[2]
-    return region, service
+    region = parts[3]
+    account_id = parts[4]
+    resource_id = parts[-1]
+    return service, region, account_id, resource_id
+
+def get_resource_name(service, resource_id):
+    if service == 'ec2':
+        ec2 = boto3.client('ec2')
+        if 'instance' in resource_id:
+            instance_id = resource_id.split('/')[-1]
+            response = ec2.describe_instances(InstanceIds=[instance_id])
+            instances = response.get('Reservations', [])
+            if instances:
+                return instances[0]['Instances'][0].get('Tags', [])
+        elif 'eipalloc' in resource_id:
+            eipalloc_id = resource_id.split('/')[-1]
+            response = ec2.describe_addresses(AllocationIds=[eipalloc_id])
+            addresses = response.get('Addresses', [])
+            if addresses:
+                return addresses[0].get('Tags', [])
+    return []
 
 def write_to_csv(resources, output_file):
     with open(output_file, 'w', newline='') as csvfile:
-        fieldnames = ['ResourceARN', 'Region', 'Service', 'Tags']
+        fieldnames = ['ResourceARN', 'Region', 'Service', 'AccountID', 'ResourceID', 'Tags', 'ResourceName']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
         for resource in resources:
-            region, service = parse_arn(resource['ResourceARN'])
+            service, region, account_id, resource_id = parse_arn(resource['ResourceARN'])
             tags = "; ".join([f"{tag['Key']}={tag['Value']}" for tag in resource['Tags']])
+            resource_tags = get_resource_name(service, resource_id)
+            resource_name = "; ".join([f"{tag['Key']}={tag['Value']}" for tag in resource_tags])
             writer.writerow({
                 'ResourceARN': resource['ResourceARN'],
                 'Region': region,
                 'Service': service,
-                'Tags': tags
+                'AccountID': account_id,
+                'ResourceID': resource_id,
+                'Tags': tags,
+                'ResourceName': resource_name
             })
 
 if __name__ == "__main__":
