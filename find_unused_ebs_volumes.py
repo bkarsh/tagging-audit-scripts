@@ -42,13 +42,13 @@ def get_unused_ebs_volumes():
                 unused_volumes.append({
                     'Account': account,
                     'Region': region,
+                    'PVC Namespace': pvc_namespace,
+                    'PVC Name': pvc_name,
                     'EBS Volume ID': volume_id,
                     'EBS Creation Date': volume['CreateTime'],
                     'Size in GB': size,
                     'EBS Type': volume_type,
                     'IOPS (if any)': iops,
-                    'PVC Namespace': pvc_namespace,
-                    'PVC Name': pvc_name,
                     'Tags': tags,
                     'Monthly cost': f"${size * 0.08:.2f}",  # Example cost calculation
                     'Yearly cost': f"${size * 0.08 * 12:.2f}"
