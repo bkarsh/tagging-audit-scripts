@@ -5,7 +5,7 @@ import pandas as pd
 # Define the number of days of inactivity
 DAYS_INACTIVE = 90
 # Calculate the date 90 days ago
-cutoff_date = datetime.utcnow() - timedelta(days=DAYS_INACTIVE)
+cutoff_date = datetime.utcnow().replace(tzinfo=None) - timedelta(days=DAYS_INACTIVE)
 
 def get_unused_ebs_volumes():
     ec2_client = boto3.client('ec2')
@@ -18,7 +18,8 @@ def get_unused_ebs_volumes():
         volumes = ec2.describe_volumes(Filters=[{'Name': 'status', 'Values': ['available']}])
         
         for volume in volumes['Volumes']:
-            if volume['CreateTime'] < cutoff_date:
+            create_time = volume['CreateTime'].replace(tzinfo=None)
+            if create_time < cutoff_date:
                 volume_id = volume['VolumeId']
                 tags = volume.get('Tags', [])
                 size = volume['Size']
@@ -46,9 +47,10 @@ def main():
     
     if unused_volumes:
         df = pd.DataFrame(unused_volumes)
-        output_file = "/mnt/data/unused_ebs_volumes.csv"
+        output_file = "unused_ebs_volumes.csv"
         df.to_csv(output_file, index=False)
         print(f"Report generated: {output_file}")
+        print(df.to_string(index=False))  # Print DataFrame to stdout
     else:
         print("No unused volumes found.")
 
